@@ -16,7 +16,31 @@ const getDishbyName = (req, res) => {
     res.status(500).json({ msg: "Server Error" });
   }
 };
+const possibleDishes = (req, res) => {
+  try {
+    const requestedIng = req.body.ingredients;
+    if (!requestedIng || requestedIng.length === 0) {
+      return res.status(400).json({ msg: "Please provide ingredients" });
+    }
+    const ingrArr = requestedIng.map((ing) => ing.toLowerCase().trim());
+
+    const possible_dishes = data.filter((dis) => {
+      return (
+        ingrArr.length === dis.ingredients.split(", ").length &&
+        dis.ingredients
+          .split(", ")
+          .every((ing) => ingrArr.includes(ing.toLowerCase()))
+      );
+    });
+
+    res.status(200).json(possible_dishes);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server Error" });
+  }
+};
 module.exports = {
   getallDishes,
   getDishbyName,
+  possibleDishes,
 };
