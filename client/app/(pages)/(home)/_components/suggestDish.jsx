@@ -17,7 +17,6 @@ const SuggestDish = () => {
       .split(",")
       .map((i) => i.trim())
       .filter((i) => i.length > 0);
-    console.log("sub", data);
     try {
       const res = await instance.post("/possibleDishes", {
         data: data,

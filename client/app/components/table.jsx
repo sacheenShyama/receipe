@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 
 const TableComponent = ({
   data,
@@ -8,19 +10,64 @@ const TableComponent = ({
   totalPage,
   page,
 }) => {
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
+
+  const handleSort = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = [...data];
+  if (sortConfig.key) {
+    sortedData.sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+
+  function renderSortIcon(key) {
+    if (sortConfig.key !== key) {
+      return null;
+    }
+    return sortConfig.direction === "ascending" ? "▲" : "▼";
+  }
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="px-6 py-3 ">
-              Name
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("name")}
+            >
+              Name {renderSortIcon("name")}
             </th>
-            <th scope="col" className="px-6 py-3 ">
-              Prep_Time
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("prep_time")}
+            >
+              Prep_Time {renderSortIcon("prep_time")}
             </th>
-            <th scope="col" className="px-6 py-3 ">
-              Cook_Time
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={() => handleSort("cook_time")}
+            >
+              Cook_Time {renderSortIcon("cook_time")}
             </th>
             <th scope="col" className="px-6 py-3">
               Course
@@ -33,8 +80,8 @@ const TableComponent = ({
         <tbody>
           {/* Example Row */}
 
-          {data &&
-            data.map((item, index) => {
+          {sortedData &&
+            sortedData.map((item, index) => {
               return (
                 <tr
                   key={index}
