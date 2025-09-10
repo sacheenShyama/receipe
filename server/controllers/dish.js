@@ -62,10 +62,19 @@ const dishSearch = (req, res) => {
 };
 const possibleDishes = (req, res) => {
   try {
-    const requestedIng = req.body.ingredients;
+    const requestedIng = req.body.data;
+
     if (!requestedIng || requestedIng.length === 0) {
       return res.status(400).json({ msg: "Please provide ingredients" });
     }
+    const page = req.body.page || 1;
+    const limit = req.body.limit || 10;
+    if (page <= 0) {
+      page = 1;
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
     const ingrArr = requestedIng.map((ing) => ing.toLowerCase().trim());
 
     const possible_dishes = data.filter((dis) => {
@@ -76,8 +85,15 @@ const possibleDishes = (req, res) => {
           .every((ing) => ingrArr.includes(ing.toLowerCase()))
       );
     });
+    const result = possible_dishes.slice(startIndex, endIndex);
 
-    res.status(200).json(possible_dishes);
+    res.status(200).json({
+      page,
+      limit,
+      total: possible_dishes.length,
+      totalPages: Math.ceil(possible_dishes.length / limit),
+      data: result,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Server Error" });
