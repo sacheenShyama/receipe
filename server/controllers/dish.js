@@ -2,7 +2,25 @@ const data = require("../data/indian_food.json");
 
 const getallDishes = (req, res) => {
   //   console.log("fetching all dishes");
-  return res.status(200).json(data);
+
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
+  if (page <= 0) {
+    page = 1;
+  }
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const result = data.slice(startIndex, endIndex);
+
+  return res.status(200).json({
+    page,
+    limit,
+    total: data.length,
+    totalPages: Math.ceil(data.length / limit),
+    data: result,
+  });
 };
 const getDishbyName = (req, res) => {
   try {
