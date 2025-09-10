@@ -54,7 +54,6 @@ const dishSearch = (req, res) => {
         region.includes(q)
       );
     });
-    console.log(suggestions);
     res.status(200).json(suggestions.slice(0, 10));
   } catch (error) {
     console.log(error);
