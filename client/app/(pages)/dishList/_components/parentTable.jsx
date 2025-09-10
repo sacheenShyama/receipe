@@ -16,7 +16,6 @@ const ParentTable = () => {
         setDisList(res.data.data);
         setTotal(res.data.total);
         setTotalPage(res.data.totalPages);
-        console.log(res.data);
       } catch (error) {
         console.log(error.message);
       }

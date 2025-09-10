@@ -1,3 +1,5 @@
+import Search from "./search";
+
 const Navbar = () => {
   return (
     <nav className="bg-white shadow-md px-4 py-2 flex justify-between items-center">
@@ -8,11 +10,7 @@ const Navbar = () => {
 
       {/* Right: Search + Avatar */}
       <div className="w-1/2">
-        <input
-          type="text"
-          placeholder="Search"
-          className="border rounded-lg px-3 py-1 w-1/2  sm:w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <Search />
 
         {/* Avatar Dropdown */}
         {/* <div className="relative"></div> */}

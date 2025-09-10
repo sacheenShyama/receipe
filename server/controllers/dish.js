@@ -1,5 +1,5 @@
 const data = require("../data/indian_food.json");
-
+const normalizeString = require("../utils/normalize");
 const getallDishes = (req, res) => {
   //   console.log("fetching all dishes");
 
@@ -34,6 +34,33 @@ const getDishbyName = (req, res) => {
     res.status(500).json({ msg: "Server Error" });
   }
 };
+const dishSearch = (req, res) => {
+  try {
+    const q = req.query.q?.toLowerCase().trim();
+    if (!q || q.lenth === 0) {
+      return res.status(400).json([]);
+    }
+
+    const suggestions = data.filter((dish) => {
+      const name = normalizeString(dish.name);
+      const ingredients = normalizeString(dish.ingredients);
+      const state = normalizeString(dish.state);
+      const region = normalizeString(dish.region);
+
+      return (
+        name.includes(q) ||
+        ingredients.includes(q) ||
+        state.includes(q) ||
+        region.includes(q)
+      );
+    });
+    console.log(suggestions);
+    res.status(200).json(suggestions.slice(0, 10));
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 const possibleDishes = (req, res) => {
   try {
     const requestedIng = req.body.ingredients;
@@ -61,4 +88,5 @@ module.exports = {
   getallDishes,
   getDishbyName,
   possibleDishes,
+  dishSearch,
 };
