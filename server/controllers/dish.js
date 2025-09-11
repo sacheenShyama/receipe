@@ -55,7 +55,7 @@ const getallDishes = (req, res) => {
     );
   }
 
-  // ✅ Pagination
+  // Pagination
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const result = filteredData.slice(startIndex, endIndex);
