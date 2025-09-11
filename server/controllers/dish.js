@@ -1,27 +1,74 @@
 const data = require("../data/indian_food.json");
 const normalizeString = require("../utils/normalize");
 const getallDishes = (req, res) => {
-  //   console.log("fetching all dishes");
+  let { page = 1, limit = 10, diet, course, flavor, region, state } = req.query;
 
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 10;
-  if (page <= 0) {
-    page = 1;
+  page = parseInt(page);
+  limit = parseInt(limit);
+  if (page <= 0) page = 1;
+
+  let filteredData = data;
+
+  // Convert query params into arrays if comma-separated
+  const toArray = (param) =>
+    param ? param.split(",").map((v) => v.trim().toLowerCase()) : null;
+
+  const diets = toArray(diet);
+  const courses = toArray(course);
+  const flavors = toArray(flavor);
+  const regions = toArray(region);
+  const states = toArray(state);
+
+  const isValid = (val) => val && val !== "-1";
+
+  if (diets) {
+    filteredData = filteredData.filter(
+      (dish) => isValid(dish.diet) && diets.includes(dish.diet.toLowerCase())
+    );
   }
 
+  if (courses) {
+    filteredData = filteredData.filter(
+      (dish) =>
+        isValid(dish.course) && courses.includes(dish.course.toLowerCase())
+    );
+  }
+
+  if (flavors) {
+    filteredData = filteredData.filter(
+      (dish) =>
+        isValid(dish.flavor_profile) &&
+        flavors.includes(dish.flavor_profile.toLowerCase())
+    );
+  }
+
+  if (regions) {
+    filteredData = filteredData.filter(
+      (dish) =>
+        isValid(dish.region) && regions.includes(dish.region.toLowerCase())
+    );
+  }
+
+  if (states) {
+    filteredData = filteredData.filter(
+      (dish) => isValid(dish.state) && states.includes(dish.state.toLowerCase())
+    );
+  }
+
+  // ✅ Pagination
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-
-  const result = data.slice(startIndex, endIndex);
+  const result = filteredData.slice(startIndex, endIndex);
 
   return res.status(200).json({
     page,
     limit,
-    total: data.length,
-    totalPages: Math.ceil(data.length / limit),
+    total: filteredData.length,
+    totalPages: Math.ceil(filteredData.length / limit),
     data: result,
   });
 };
+
 const getDishbyName = (req, res) => {
   try {
     const name = req.query.name.toLowerCase();
