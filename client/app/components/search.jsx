@@ -10,23 +10,24 @@ const Search = () => {
 
   const deboucedQuery = useDebounce(query, 300);
 
-  useEffect(() => {
-    if (deboucedQuery) {
-      console.log("api calling");
-      instance
-        .get(`dish/search?q=${deboucedQuery}`)
-        .then((res) => setResult(res.data))
-        .catch((err) => {
-          console.log(err);
-          setResult([]);
-        });
+useEffect(() => {
+    if (!deboucedQuery) {
+      setResult([]);
+      return;
     }
+    instance
+      .get(`dish/search?q=${deboucedQuery.trim()}`)
+      .then((res) => setResult(res.data))
+      .catch((err) => {
+        console.log(err);
+        setResult([]);
+      });
   }, [deboucedQuery]);
   return (
     <div>
       <input
         value={query}
-        onChange={(e) => setQuery(e.target.value.trim())}
+        onChange={(e) => setQuery(e.target.value)}
         type="text"
         placeholder="Search"
         className="border rounded-lg px-3 py-1 w-1/2  sm:w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
