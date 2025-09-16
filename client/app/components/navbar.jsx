@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Search from "./search";
 
 const Navbar = () => {
@@ -5,7 +6,9 @@ const Navbar = () => {
     <nav className="bg-white shadow-md px-4 py-2 flex justify-between items-center">
       {/* Left: Logo */}
       <div>
-        <p className="text-xl font-bold text-gray-800">🍛 Cuisine Explorer</p>
+       <p className="text-xl font-bold text-gray-800">
+          <Link href={"/"}> 🍛 Cuisine Explorer </Link>
+        </p>
       </div>
 
       {/* Right: Search + Avatar */}
